@@ -277,33 +277,19 @@ namespace Flotter {
         public string get_notable_points() {
             Flotter.show_msg("src/brain.vala Flotter.Function.get_notable_points", this.type);
 
-            //string points = "";
+            double[] roots = this.get_roots();
+            double[] intercepts = this.get_intercepts();
+            string points = "";
 
-            /*switch (this.type) {
-                case Flotter.FunctionType.CONST:
-                    points = "0,%f".printf(this.a);
-                    break;
-
-                case Flotter.FunctionType.LINEAL:
-
-                    points = Flotter.get_formula_as_lineal(this.values, this.name);
-                    break;
-
-                case Flotter.FunctionType.CUADRATIC:
-                    points = Flotter.get_formula_as_cuadratic(this.values, this.name);
-                    break;
-
-                case Flotter.FunctionType.RACIONAL:
-                    points = Flotter.get_formula_as_racional(this.values, this.name);
-                    break;
-
-                case Flotter.FunctionType.EXPONENTIAL:
-                    points = Flotter.get_formula_as_exponential(this.values, this.name);
-                    break;
+            foreach (double root in roots) {
+                points += "%f 0|".printf(root);
             }
-            */
 
-            return ""; //Flotter.clean_double(points);
+            foreach (double intercept in intercepts) {
+                points += "0 %f|".printf(intercept);
+            }
+
+            return points;
         }
     }
 }

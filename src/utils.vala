@@ -60,7 +60,7 @@ namespace Flotter {
         // ax + b - y = 0
         double a = values[Flotter.A];
         double b = values[Flotter.B];
-        return solve_as_lineal({ a, b - y})[0];
+        return Flotter.solve_as_lineal({ a, b - y})[0];
     }
 
     public double get_y_as_lineal(double[] values, double x) {
@@ -422,7 +422,7 @@ namespace Flotter {
         if (a == 0) {
             solution = { b };
         } else {
-            solution = { b / a };
+            solution = { b / (a * -1) };
         }
 
         return solution;

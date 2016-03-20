@@ -27,7 +27,7 @@ namespace Flotter {
             this.add(this.box);
 
             this.check_button = new Gtk.CheckButton();
-            this.check_button.activate.connect(() => { this.show_notable_points(this.check_button.get_active()); });
+            this.check_button.toggled.connect(this.show_points_changed);
             this.box.pack_start(this.check_button, false, false, 0);
 
             Gdk.RGBA rgba = Gdk.RGBA();
@@ -65,6 +65,10 @@ namespace Flotter {
         private void clicked_cb(Gtk.Button button) {
             Flotter.show_msg("src/list_view.vala Flotter.ListViewRow.clicked_cb %s".printf(function.get_formula()));
             this.remove_function();
+        }
+
+        private void show_points_changed(Gtk.ToggleButton button) {
+            this.show_notable_points(button.get_active());
         }
     }
 

@@ -245,9 +245,29 @@ namespace Flotter {
                     }
                 }
 
-                //if (function.show_notable_points) {
-                //    string points = function.get_notable_points();
-                //}
+                if (function.show_notable_points) {
+                    string points = function.get_notable_points();
+                    double saved_x = x;
+                    double saved_y = y;
+
+                    context.set_line_width(Flotter.PLOT_LINE_WIDTH);
+
+                    foreach (string point in points.split("|")) {
+                        if (point == "") {
+                            continue;
+                        }
+
+                        double px = double.parse(Flotter.clean_double(point.split(" ")[0]));
+                        double py = double.parse(Flotter.clean_double(point.split(" ")[1]));
+
+                        this.get_coordinates(px, py, out x, out y);
+                        context.arc(x, y, 5, 0, 2 * GLib.Math.PI);
+                        context.fill();
+                    }
+
+                    x = saved_x;
+                    y = saved_y;
+                }
             }
         }
 
