@@ -244,7 +244,15 @@ namespace Flotter {
 
                 for (int i=this.get_first_x(); i <= this.get_last_x(); i++) {
                     for (double _i=0.05; _i <= 1.0; _i += 0.05) {
-                        this.get_coordinates(i + _i, function.get_y(i + _i), out x, out y);
+                        double number = i + _i;
+                        this.get_coordinates(number, function.get_y(number), out x, out y);
+
+                        if (function.type == Flotter.FunctionType.EXPONENTIAL) {
+                            if (y < 0.0001) {
+                                y = 0;
+                            }
+                        }
+
                         context.line_to(x, y);
                         context.stroke();
 

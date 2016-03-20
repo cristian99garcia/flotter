@@ -40,11 +40,14 @@ namespace Flotter {
     }
 
     public double parse_coefficient(string monomial) {
+        double number;
         if (monomial.split("x")[0] != "") {
-            return double.parse(monomial.split("x")[0]);
+            number = double.parse(monomial.split("x")[0]);
         } else {
-            return 1;
+            number = 1;
         }
+
+        return number;
     }
 
     public double? get_x_as_const(double[] values, double y) {
@@ -220,7 +223,7 @@ namespace Flotter {
 
         foreach (string m in mterm2) {
             if ("x" in m) {
-                a = Flotter.parse_coefficient(m);
+                c = Flotter.parse_coefficient(m);
             } else {
                 d = double.parse(m);
             }
