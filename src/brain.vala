@@ -6,6 +6,7 @@ namespace Flotter {
         public double[] values = {};  // For save data;
         public double[] color = Flotter.get_random_color();
         public string? name = null;
+        public bool show_notable_points = false;
 
         public double a = 0;
         public double b = 0;
@@ -112,7 +113,7 @@ namespace Flotter {
             }
         }
 
-        public double get_x(double y) {
+        public double? get_x(double y) {
             switch (this.type) {
                 case Flotter.FunctionType.CONST:
                     return y;
@@ -121,7 +122,7 @@ namespace Flotter {
                     return Flotter.get_x_as_lineal(this.values, y);
 
                 case Flotter.FunctionType.CUADRATIC:
-                    return Flotter.get_x_as_cuadratic(this.values, y);
+                    return Flotter.get_x_as_cuadratic(this.values, y, 0);
 
                 case Flotter.FunctionType.RACIONAL:
                     return Flotter.get_x_as_racional(this.values, y);
@@ -182,6 +183,127 @@ namespace Flotter {
             }
 
             return Flotter.clean_double(formula);
+        }
+
+        public double[] get_roots() {
+            Flotter.show_msg("src/brain.vala Flotter.Function.get_notable_points", this.type);
+
+            double[] solutions;
+            double[] empty = {};
+            double[] roots = {};
+
+            switch (this.type) {
+                case Flotter.FunctionType.CONST:
+                    roots = { };
+                    break;
+
+                case Flotter.FunctionType.LINEAL:
+                    roots = { Flotter.get_x_as_lineal(this.values, 0) };
+                    break;
+
+                case Flotter.FunctionType.CUADRATIC:
+                    double? root1 = Flotter.get_x_as_cuadratic(this.values, 0, 0);
+                    double? root2 = Flotter.get_x_as_cuadratic(this.values, 0, 1);
+                    if (root1 == null && root2 == null) {
+                        roots = { };
+                    } else if (root1 != null && root2 == null) {
+                        roots = { root1 };
+                    } else {
+                        roots = { root1, root2 };
+                    }
+                    break;
+
+                case Flotter.FunctionType.RACIONAL:
+                    solutions = Flotter.solve_as_racional(this.values);
+                    if (solutions == empty) {
+                        roots = { };
+                    } else {
+                        if (solutions.length == 1) {
+                            roots = { solutions[0] };
+                        } else if (solutions.length == 2) {
+                            roots = { solutions[0], solutions[1] };
+                        }
+                    }
+                    break;
+
+                case Flotter.FunctionType.EXPONENTIAL:
+                    solutions = Flotter.solve_as_exponential(this.values);
+                    if (solutions == empty) {
+                        roots = { };
+                    } else {
+                        roots = { solutions[0] };
+                    }
+                    break;
+            }
+
+            return roots;
+        }
+
+        public double[] get_intercepts() {
+            // FIXME: translate name
+            double[] intercepts = {};
+
+            switch (this.type) {
+                case Flotter.FunctionType.CONST:
+                    intercepts = { this.a };
+                    break;
+
+                case Flotter.FunctionType.LINEAL:
+                    intercepts = { Flotter.get_y_as_lineal(this.values, 0) };
+                    break;
+
+                case Flotter.FunctionType.CUADRATIC:
+                    intercepts = { Flotter.get_y_as_cuadratic(this.values, 0) };
+                    break;
+
+                case Flotter.FunctionType.RACIONAL:
+                    double? intercept = Flotter.get_y_as_racional(this.values, 0);
+
+                    if (intercept == null) {
+                        intercepts = { };
+                    } else {
+                        intercepts = { intercept };
+                    }
+                    break;
+
+                case Flotter.FunctionType.EXPONENTIAL:
+                    intercepts = { Flotter.get_y_as_exponential(this.values, 0) };
+                    break;
+            }
+
+            return intercepts;
+        }
+
+        public string get_notable_points() {
+            Flotter.show_msg("src/brain.vala Flotter.Function.get_notable_points", this.type);
+
+            //string points = "";
+
+            /*switch (this.type) {
+                case Flotter.FunctionType.CONST:
+                    points = "0,%f".printf(this.a);
+                    break;
+
+                case Flotter.FunctionType.LINEAL:
+
+                    points = Flotter.get_formula_as_lineal(this.values, this.name);
+                    break;
+
+                case Flotter.FunctionType.CUADRATIC:
+                    points = Flotter.get_formula_as_cuadratic(this.values, this.name);
+                    break;
+
+                case Flotter.FunctionType.RACIONAL:
+                    points = Flotter.get_formula_as_racional(this.values, this.name);
+                    break;
+
+                case Flotter.FunctionType.EXPONENTIAL:
+                    points = Flotter.get_formula_as_exponential(this.values, this.name);
+                    break;
+            }
+            */
+
+            return ""; //Flotter.clean_double(points);
         }
     }
 }

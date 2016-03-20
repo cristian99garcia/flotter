@@ -244,6 +244,10 @@ namespace Flotter {
                         context.move_to(x, y);
                     }
                 }
+
+                //if (function.show_notable_points) {
+                //    string points = function.get_notable_points();
+                //}
             }
         }
 

@@ -47,19 +47,43 @@ namespace Flotter {
         }
     }
 
+    public double? get_x_as_const(double[] values, double y) {
+        return null;
+    }
+
+    public double? get_y_as_const(double[] values, double x) {
+        return null;
+    }
+
     public double get_x_as_lineal(double[] values, double y) {
-        return 0;
+        // ax + b = y
+        // ax + b - y = 0
+        double a = values[Flotter.A];
+        double b = values[Flotter.B];
+        return solve_as_lineal({ a, b - y})[0];
     }
 
     public double get_y_as_lineal(double[] values, double x) {
-        double a, b;
-        a = values[Flotter.A];
-        b = values[Flotter.B];
+        double a = values[Flotter.A];
+        double b = values[Flotter.B];
         return (a * x) + b;
     }
 
-    public double get_x_as_cuadratic(double[] values, double y) {
-        return 0;
+    public double? get_x_as_cuadratic(double[] values, double y, int p) {
+        // ax^2 + bx + c = y
+        // ax^2 + bx + c - y = 0
+        double a = values[Flotter.A];
+        double b = values[Flotter.B];
+        double c = values[Flotter.C];
+        double[] solutions = Flotter.solve_as_cuadratic({ a, b, c - y });
+
+        if (solutions.length == 1) {
+            return solutions[0];
+        } else if (solutions.length > 1 && p < solutions.length && p >= 0) {
+            return solutions[p];
+        } else {
+            return null;
+        }
     }
 
     public double get_y_as_cuadratic(double[] values, double x) {
@@ -87,14 +111,18 @@ namespace Flotter {
         return 0;
     }
 
-    public double get_y_as_racional(double[] values, double x) {
+    public double? get_y_as_racional(double[] values, double x) {
         double a, b, c, d;
         a = values[Flotter.A];
         b = values[Flotter.B];
         c = values[Flotter.C];
         d = values[Flotter.D];
-        print("%f %f %f %f\n", a, b, c, d);
-        return ((a * x) + b) / ((c * x) + d);
+
+        if ((c * x) + d == 0) {
+            return null;
+        } else {
+            return ((a * x) + b) / ((c * x) + d);
+        }
     }
 
     public double get_x_as_exponential(double[] values, double y) {
@@ -386,37 +414,26 @@ namespace Flotter {
         context.add_provider(style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
     }
 
-
-
-
-    /*
-    public double[] solve_as_simple(double values[]) {
+    public double[] solve_as_lineal(double[] values) {
         double[] solution = {};
-        //double a = values[Flotter.A];
-        //double b = values[Flotter.B];
-        //double c = values[Flotter.C];
+        double a = values[Flotter.A];
+        double b = values[Flotter.B];
 
-        //if (a == 0) {
-        //    solution = { b - c };
-        //} else {
-        //    solution = { (b - c) / a };
-        //}
+        if (a == 0) {
+            solution = { b };
+        } else {
+            solution = { b / a };
+        }
 
         return solution;
     }
 
     public double[] solve_as_cuadratic(double[] values) {
-        double[] solutions = { 0, 0 };
+        double[] solutions = { };
 
         double a = values[Flotter.A];
         double b = values[Flotter.B];
         double c = values[Flotter.C];
-        double d = values[Flotter.D];
-
-        if (d != 0) {
-            c -= d;
-            d = 0;
-        }
 
         if (a != 0 && b != 0 && c != 0) {
             // Bhaskara:
@@ -427,14 +444,13 @@ namespace Flotter {
             double z = (b * b) - (4 * (a * c));
 
             if (z < 0) {
-                Flotter.show_msg("WITHOUT POSSIBLE SOLUTIONS: " + (new Flotter.Function.from_values(values).get_formula()) + " " + z.to_string(), Flotter.FunctionType.CUADRATIC);
-                return { 0, 0 };
+                solutions = { };
+            } else {
+                double px = (-b + Math.sqrt(z)) / (2 * a);
+                double nx = (-b - Math.sqrt(z)) / (2 * a);
+
+                solutions = { px, nx };
             }
-
-            double px = (-b + Math.sqrt(z)) / (2 * a);
-            double nx = (-b - Math.sqrt(z)) / (2 * a);
-
-            solutions = { px, nx };
         } else if (a != 0 && b != 0 && c == 0) {
             // Example:
             //   8x^2 - 16x = 0
@@ -461,7 +477,7 @@ namespace Flotter {
             //     2x = √64
             //     2x = -8
             //     x = -4
-            solutions = { GLib.Math.sqrt(c) / a, -GLib.Math.sqrt(c) / a };
+            solutions = { GLib.Math.sqrt(c) / a, -(GLib.Math.sqrt(c) / a) };
         } else if (a != 0 && b == 0 && c == 0) {
             // Example:
             //   4x^2 = 0
@@ -480,6 +496,59 @@ namespace Flotter {
         return solutions;
     }
 
+    public double[] solve_as_racional(double[] values) {
+        double[] solutions = {};
+
+        double a = values[Flotter.A];
+        double b = values[Flotter.B];
+        double c = values[Flotter.C];
+        double d = values[Flotter.D];
+
+        if (a != 0 && b != 0) {
+            // Example:
+            //  3x + 6
+            //  ______ = 0
+            //  x + 3
+            //
+            // 3x + 6 = 0
+            // x = 6 / 2 = 3
+
+            solutions = { a / b };
+        } else if (a != 0 && b == 0 && d != 0) {
+            // Example:
+            //     2x
+            //  _______ = 0
+            //   x + 1
+            //
+            //     x
+            //    ___ = 0
+            //     1
+            //
+            //    x = 0
+
+            solutions = { 0 };
+        } else if (a != 0 && b != 0 && c != 0 && d == 0) {
+            solutions =  { };
+        } else if (c == 0) {
+            solutions = { 0 };
+        }
+
+        return solutions;
+    }
+
+    public double[] solve_as_exponential(double[] values) {
+        double[] solutions = {};
+
+        double b = values[Flotter.B];
+
+        if (b < 0) {
+            solutions = { b + 1 };
+        }
+
+        return solutions;
+    }
+
+    /*
     public double[] solve_as_cubic(double[] values) {
         double x1 = 0;
         double x2 = 0;

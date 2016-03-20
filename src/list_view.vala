@@ -4,10 +4,12 @@ namespace Flotter {
 
         public signal void color_changed(double[] color);
         public signal void remove_function();
+        public signal void show_notable_points(bool show);
 
         public Flotter.Function function;
 
         public Gtk.Box box;
+        public Gtk.CheckButton check_button;
         public Gtk.ColorButton color_button;
         public Gtk.Label label;
         public Gtk.Button close_button;
@@ -23,6 +25,10 @@ namespace Flotter {
             this.box.set_margin_start(2);
             this.box.set_margin_end(2);
             this.add(this.box);
+
+            this.check_button = new Gtk.CheckButton();
+            this.check_button.activate.connect(() => { this.show_notable_points(this.check_button.get_active()); });
+            this.box.pack_start(this.check_button, false, false, 0);
 
             Gdk.RGBA rgba = Gdk.RGBA();
             rgba.red = function.color[0];
@@ -67,6 +73,7 @@ namespace Flotter {
         public signal void selection_changed(Flotter.Function? function);
         public signal void function_removed(Flotter.Function function);
         public signal void color_changed(Flotter.Function function, double[] color);
+        public signal void show_notable_points(Flotter.Function function, bool show);
 
         public Gtk.ListBox list_view;
 
@@ -104,12 +111,18 @@ namespace Flotter {
             this.function_removed(row.function);
         }
 
+        private void show_notable_points_cb(Flotter.ListViewRow row, bool show) {
+            Flotter.show_msg("src/list_view.vala Flotter.ListView.show_notable_points_cb");
+            this.show_notable_points(row.function, show);
+        }
+
         public void add_function(Flotter.Function function) {
             Flotter.show_msg("src/list_view.vala Flotter.ListView.add_function %s".printf(function.get_formula()));
 
             Flotter.ListViewRow row = new Flotter.ListViewRow(function);
             row.color_changed.connect(this.color_changed_cb);
             row.remove_function.connect(this.function_removed_cb);
+            row.show_notable_points.connect(this.show_notable_points_cb);
             this.list_view.add(row);
             this.show_all();
         }

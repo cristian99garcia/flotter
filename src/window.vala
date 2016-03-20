@@ -20,6 +20,7 @@ namespace Flotter {
             this.list_view.selection_changed.connect(this.selection_changed_cb);
             this.list_view.function_removed.connect(this.function_removed_cb);
             this.list_view.color_changed.connect(this.color_changed_cb);
+            this.list_view.show_notable_points.connect(this.show_notable_points_cb);
             hbox.pack_start(this.list_view, false, false, 0);
 
             Gtk.Box vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
@@ -54,8 +55,12 @@ namespace Flotter {
             this.area.update();
         }
 
+        private void show_notable_points_cb(Flotter.Function function, bool show) {
+            function.show_notable_points = show;
+            this.area.update();
+        }
+
         public void add_function(Flotter.Function function) {
-            // 3x + 1 = 4
             this.area.add_function(function);
             this.list_view.add_function(function);
         }
