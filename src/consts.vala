@@ -13,6 +13,7 @@ namespace Flotter {
     public const double PLOT_LINE_WIDTH = 2;
     public const double PLOT_SELECTED_LINE_WIDTH = 4;
     public const double GRID_FONT_SIZE = 14;
+    public const double NOTABLE_POINT_WIDTH = 5;
 
     public const int A = 0;
     public const int B = 1;

@@ -93,7 +93,7 @@ namespace Flotter {
                 case Flotter.FunctionType.CUADRATIC:
                     // C(x) = 4x^2 + 3x - 1
                     this.a = values[Flotter.A];
-                    this.b = values[Flotter.D];
+                    this.b = values[Flotter.B];
                     this.c = values[Flotter.C];
                     break;
 
@@ -274,19 +274,26 @@ namespace Flotter {
             return intercepts;
         }
 
-        public string get_notable_points() {
-            Flotter.show_msg("src/brain.vala Flotter.Function.get_notable_points", this.type);
+        public double[] get_notable_points() {
+            double[] points = {};
 
-            double[] roots = this.get_roots();
-            double[] intercepts = this.get_intercepts();
-            string points = "";
-
-            foreach (double root in roots) {
-                points += "%f 0|".printf(root);
+            foreach (double root in this.get_roots()) {
+                points += root;  // X
+                points += 0;     // Y
             }
 
-            foreach (double intercept in intercepts) {
-                points += "0 %f|".printf(intercept);
+            foreach (double intercept in this.get_intercepts()) {
+                points += 0;          // X
+                points += intercept;  // Y
+            }
+
+            if (this.type == Flotter.FunctionType.CUADRATIC) {
+                // Add vertex
+                double x = -(this.b / 2 * this.a);
+                double y = this.get_y(x);
+
+                points += x;
+                points += y;
             }
 
             return points;

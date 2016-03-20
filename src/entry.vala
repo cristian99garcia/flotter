@@ -18,6 +18,7 @@ namespace Flotter {
             string? name = null;
             Flotter.FunctionType? type = null;
             string text = this.get_text().replace(" ", "");
+            text = text.replace(",", ".");
             this.set_text("");
 
             if (text.length > 5) {

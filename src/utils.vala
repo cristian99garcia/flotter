@@ -465,19 +465,23 @@ namespace Flotter {
 
             solutions = { a / b, 0 };
         } else if (a != 0 && b == 0 && c != 0) {
-            // Example:
-            //   2x^2 - 64 = 0
-            //   2x^2 = 64
-            //   Solution 1:
-            //     2x = √64
-            //     2x = 8
-            //     x = 4
-            //
-            //   Solution 2:
-            //     2x = √64
-            //     2x = -8
-            //     x = -4
-            solutions = { GLib.Math.sqrt(c) / a, -(GLib.Math.sqrt(c) / a) };
+            if (c < 0) {
+                // Example:
+                //   2x^2 - 64 = 0
+                //   2x^2 = 64
+                //   Solution 1:
+                //     2x = √64
+                //     2x = 8
+                //     x = 4
+                //
+                //   Solution 2:
+                //     2x = √64
+                //     2x = -8
+                //     x = -4
+                solutions = { GLib.Math.sqrt(c) / a, -(GLib.Math.sqrt(c) / a) };
+            } else {
+                solutions = { };
+            }
         } else if (a != 0 && b == 0 && c == 0) {
             // Example:
             //   4x^2 = 0

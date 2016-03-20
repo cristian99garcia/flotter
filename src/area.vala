@@ -217,6 +217,13 @@ namespace Flotter {
             context.stroke();
         }
 
+        private void draw_point(Cairo.Context context, double px, double py) {
+            double x, y;
+            this.get_coordinates(px, py, out x, out y);
+            context.arc(x, y, Flotter.NOTABLE_POINT_WIDTH, 0, 2 * GLib.Math.PI);
+            context.fill();
+        }
+
         private void draw_functions(Cairo.Context context) {
             Flotter.show_msg("src/area.vala Flotter.Area.draw_functions");
 
@@ -246,27 +253,19 @@ namespace Flotter {
                 }
 
                 if (function.show_notable_points) {
-                    string points = function.get_notable_points();
-                    double saved_x = x;
-                    double saved_y = y;
-
-                    context.set_line_width(Flotter.PLOT_LINE_WIDTH);
-
-                    foreach (string point in points.split("|")) {
-                        if (point == "") {
-                            continue;
-                        }
-
-                        double px = double.parse(Flotter.clean_double(point.split(" ")[0]));
-                        double py = double.parse(Flotter.clean_double(point.split(" ")[1]));
-
-                        this.get_coordinates(px, py, out x, out y);
-                        context.arc(x, y, 5, 0, 2 * GLib.Math.PI);
-                        context.fill();
+                    foreach (double root in function.get_roots()) {
+                        this.draw_point(context, root, 0);
                     }
 
-                    x = saved_x;
-                    y = saved_y;
+                    foreach (double intercept in function.get_intercepts()) {
+                        this.draw_point(context, 0, intercept);
+                    }
+
+                    if (function.type == Flotter.FunctionType.CUADRATIC) {
+                        double px = -function.b / (2 * function.a);
+                        double py = function.get_y(px);
+                        this.draw_point(context, px, py);
+                    }
                 }
             }
         }
