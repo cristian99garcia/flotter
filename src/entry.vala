@@ -55,7 +55,7 @@ namespace Flotter {
                     }
                 }
 
-                if (max_degree < 3) {
+                if (max_degree < 4) {
                     switch (max_degree) {
                         case 0:
                             type = Flotter.FunctionType.CONST;
@@ -67,6 +67,10 @@ namespace Flotter {
 
                         case 2:
                             type = Flotter.FunctionType.CUADRATIC;
+                            break;
+
+                        case 3:
+                            type = Flotter.FunctionType.CUBIC;
                             break;
 
                         default:

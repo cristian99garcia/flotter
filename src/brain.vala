@@ -55,6 +55,10 @@ namespace Flotter {
                     values = Flotter.get_values_as_exponential(formula);
                     break;
 
+                case Flotter.FunctionType.CUBIC:
+                    values = Flotter.get_values_as_cubic(formula);
+                    break;
+
                 default:
                     return;
             }
@@ -97,8 +101,16 @@ namespace Flotter {
                     this.c = values[Flotter.C];
                     break;
 
+                case Flotter.FunctionType.CUBIC:
+                    // D(x) = 2x^3 - 3x^2 + 4x - 5
+                    this.a = values[Flotter.A];
+                    this.b = values[Flotter.B];
+                    this.c = values[Flotter.C];
+                    this.d = values[Flotter.D];
+                    break;
+
                 case Flotter.FunctionType.RACIONAL:
-                    // D(x) = (3x - 4) / (2x + 2)
+                    // E(x) = (3x - 4) / (2x + 2)
                     this.a = values[Flotter.A];
                     this.b = values[Flotter.B];
                     this.c = values[Flotter.C];
@@ -106,7 +118,7 @@ namespace Flotter {
                     break;
 
                 case Flotter.FunctionType.EXPONENTIAL:
-                    // E(x) = 2^x + 1
+                    // F(x) = 2^x + 1
                     this.a = values[Flotter.A];
                     this.b = values[Flotter.B];
                     break;
@@ -123,6 +135,9 @@ namespace Flotter {
 
                 case Flotter.FunctionType.CUADRATIC:
                     return Flotter.get_x_as_cuadratic(this.values, y, 0);
+
+                case Flotter.FunctionType.CUBIC:
+                    return Flotter.get_x_as_cubic(this.values, y, 0);
 
                 case Flotter.FunctionType.RACIONAL:
                     return Flotter.get_x_as_racional(this.values, y);
@@ -144,6 +159,9 @@ namespace Flotter {
 
                 case Flotter.FunctionType.CUADRATIC:
                     return Flotter.get_y_as_cuadratic(this.values, x);
+
+                case Flotter.FunctionType.CUBIC:
+                    return Flotter.get_y_as_cubic(this.values, x);
 
                 case Flotter.FunctionType.RACIONAL:
                     return Flotter.get_y_as_racional(this.values, x);
@@ -171,6 +189,10 @@ namespace Flotter {
 
                 case Flotter.FunctionType.CUADRATIC:
                     formula = Flotter.get_formula_as_cuadratic(this.values, this.name);
+                    break;
+
+                case Flotter.FunctionType.CUBIC:
+                    formula = Flotter.get_formula_as_cubic(this.values, this.name);
                     break;
 
                 case Flotter.FunctionType.RACIONAL:
@@ -211,6 +233,51 @@ namespace Flotter {
                     } else {
                         roots = { root1, root2 };
                     }
+                    break;
+
+                case Flotter.FunctionType.CUBIC:
+                    double Q = ((3 * b) - GLib.Math.pow(a, 2)) / 9;
+                    double R = ((9 * a * b) - (27 * c) - (2 * GLib.Math.pow(a, 2))) / 54;
+                    double D = GLib.Math.pow(R, 2) + GLib.Math.pow(Q, 3);
+
+                    double S1 = GLib.Math.cbrt(R + GLib.Math.sqrt(GLib.Math.pow(Q, 3) + GLib.Math.pow(R, 2)));
+                    double S2 = GLib.Math.cbrt(R - GLib.Math.sqrt(GLib.Math.pow(Q, 3) + GLib.Math.pow(R, 2)));
+
+                    double root1 = S1 + S2 - (a / 3);
+                    double root2 = ((S1 + S2) / 2) - (a / 3) + ((1 * GLib.Math.sqrt(3) / 2) * (S1 - S2));
+                    double root3 = ((S1 + S2) / 2) - (a / 3) + ((2 * GLib.Math.sqrt(3) / 2) * (S1 - S2));
+
+                    if (D > 0) {
+                        roots = { root1 };
+                    } else if (D == 0) {
+                        roots = { root1, root2 };
+                    } else if (D < 0) {
+                        roots = { root1, root2, root3 };
+                    }
+
+                    /*
+                    double? root1 = Flotter.get_x_as_cubic(this.values, 0, 0);
+                    double? root2 = Flotter.get_x_as_cubic(this.values, 0, 1);
+                    double? root3 = Flotter.get_x_as_cubic(this.values, 0, 2);
+
+                    if (root1 == null && root2 == null && root3 == null) {
+                        roots = { };
+                    } else if (root1 != null && root2 == null && root3 == null) {
+                        roots = { root1 };
+                    } else if (root1 == null && root2 != null && root3 == null) {
+                        roots = { root2 };
+                    } else if (root1 == null && root2 == null && root3 != null) {
+                        roots = { root3 };
+                    } else if (root1 != null && root2 != null && root3 == null) {
+                        roots = { root1, root2 };
+                    } else if (root1 != null && root2 == null && root3 != null) {
+                        roots = { root1, root3 };
+                    } else if (root1 == null && root2 != null && root3 != null) {
+                        roots = { root2, root3 };
+                    } else {
+                        roots = { root1, root2, root3 };
+                    }
+                    */
                     break;
 
                 case Flotter.FunctionType.RACIONAL:
@@ -254,6 +321,10 @@ namespace Flotter {
 
                 case Flotter.FunctionType.CUADRATIC:
                     intercepts = { Flotter.get_y_as_cuadratic(this.values, 0) };
+                    break;
+
+                case Flotter.FunctionType.CUBIC:
+                    intercepts = { Flotter.get_y_as_cubic(this.values, 0) };
                     break;
 
                 case Flotter.FunctionType.RACIONAL:

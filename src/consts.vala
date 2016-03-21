@@ -31,6 +31,7 @@ namespace Flotter {
         CONST,
         LINEAL,
         CUADRATIC,
+        CUBIC,
         RACIONAL,
         EXPONENTIAL
     }

@@ -72,7 +72,7 @@ namespace Flotter {
         return (a * x) + b;
     }
 
-    public double? get_x_as_cuadratic(double[] values, double y, int p) {
+    public double? get_x_as_cuadratic(double[] values, double y, int p=0) {
         // ax^2 + bx + c = y
         // ax^2 + bx + c - y = 0
         double a = values[Flotter.A];
@@ -97,18 +97,33 @@ namespace Flotter {
         return (a * GLib.Math.pow(x, 2)) + (b * x) + c;
     }
 
-    //public double get_x_as_cubic(double[] values, double y) {
-    //    return 0;
-    //}
+    public double? get_x_as_cubic(double[] values, double y, int p=0) {
+        // ax^3 + bx^2 + cx + d = y
+        // ax^3 + bx^2 + cx + d - y = 0
 
-    //public double get_y_as_cubic(double[] values, double x) {
-    //    double a, b, c, d;
-    //    a = values[Flotter.A];
-    //    b = values[Flotter.B];
-    //    c = values[Flotter.C];
-    //    d = values[Flotter.D];
-    //    return (a * GLib.Math.pow(x, 3)) + (b * GLib.Math.pow(x, 2)) + (c * x) + d;
-    //}
+        double a = values[Flotter.A];
+        double b = values[Flotter.B];
+        double c = values[Flotter.C];
+        double d = values[Flotter.D];
+        double[] solutions = Flotter.solve_as_cubic({ a, b, c, d - y });
+
+        if (solutions.length == 1) {
+            return solutions[0];
+        } else if (solutions.length > 1 && p < solutions.length && p >= 0) {
+            return solutions[p];
+        } else {
+            return null;
+        }
+    }
+
+    public double get_y_as_cubic(double[] values, double x) {
+        double a, b, c, d;
+        a = values[Flotter.A];
+        b = values[Flotter.B];
+        c = values[Flotter.C];
+        d = values[Flotter.D];
+        return (a * GLib.Math.pow(x, 3)) + (b * GLib.Math.pow(x, 2)) + (c * x) + d;
+    }
 
     public double get_x_as_racional(double[] values, double y) {
         return 0;
@@ -129,7 +144,12 @@ namespace Flotter {
     }
 
     public double get_x_as_exponential(double[] values, double y) {
-        return 0;
+        // a^x + b = y
+        // a^x + b - y = 0
+        double a, b;
+        a = values[Flotter.A];
+        b = values[Flotter.B];
+        return Flotter.solve_as_exponential({a, b - y})[0];
     }
 
     public double get_y_as_exponential(double[] values, double x) {
@@ -196,6 +216,36 @@ namespace Flotter {
         }
 
         return { a, b, c };
+    }
+
+    public double[] get_values_as_cubic(string data) {
+        string[] monomials = Flotter.split_in_monomials(data);
+
+        double a = 0;
+        double b = 0;
+        double c = 0;
+        double d = 0;
+
+        foreach (string m in monomials) {
+            if (m == "") {
+                continue;
+            }
+
+            if ("x^" in m) {
+                int degree = int.parse(m.split("x^")[1]);
+                if (degree == 3) {
+                    a = Flotter.parse_coefficient(m);
+                } else if (degree == 2) {
+                    b = Flotter.parse_coefficient(m);
+                }
+            } else if ("x" in m && !("x^" in m)) {
+                c = Flotter.parse_coefficient(m);
+            } else {
+                d = double.parse(m);
+            }
+        }
+
+        return { a, b, c, d };
     }
 
     public double[] get_values_as_racional(string data) {
@@ -312,6 +362,45 @@ namespace Flotter {
                 formula += "+";
             }
             formula += c.to_string();
+        }
+
+        return formula;
+    }
+
+    public string get_formula_as_cubic(double[] values, string? name = null) {
+        string formula;
+        double a = values[Flotter.A];
+        double b = values[Flotter.B];
+        double c = values[Flotter.C];
+        double d = values[Flotter.D];
+
+        if (name != null) {
+            formula = name + "(x) = ";
+        } else {
+            formula = "F(x) = ";
+        }
+
+        formula += "%fx^3".printf(a);
+
+        if (b != 0) {
+            if (b > 0) {
+                formula += "+";
+            }
+            formula += "%fx^2".printf(b);
+        }
+
+        if (c != 0) {
+            if (c > 0) {
+                formula += "+";
+            }
+            formula += "%fx".printf(c);
+        }
+
+        if (d != 0) {
+            if (d > 0) {
+                formula += "+";
+            }
+            formula += d.to_string();
         }
 
         return formula;
@@ -503,6 +592,47 @@ namespace Flotter {
         return solutions;
     }
 
+    public double[] solve_as_cubic(double[] values) {
+        double x1 = 0;
+        double x2 = 0;
+        double x3 = 0;
+
+        double a, b, c, d;
+        a = values[Flotter.A];
+        b = values[Flotter.B];
+        c = values[Flotter.C];
+        d = values[Flotter.D];
+
+        if (d == 0) {
+            // Example:
+            // 4x^3 - 5x^2 - x = 0
+            // x * (4x^2 - 5x - 1) = 0
+            // Solution 1:
+            //   x = 0
+            //
+            // Solution 2 n 3:
+            //   Solve as cuadratic
+
+            double[] other_solutions = Flotter.solve_as_cuadratic({ a, b, c });
+            x1 = 0;
+            x2 = other_solutions[1];
+            x3 = other_solutions[3];
+        } else if (d != 0) {
+            double delta0 = (b * b) - (3 * a * c);
+            double delta1 = (2 * GLib.Math.pow(b, 3)) - (9 * (a * b * c)) + (27 * GLib.Math.pow(a, 2) * d);
+            //double delta = ((delta1 * delta1) - (4 * GLib.Math.pow(delta0, 3))) / -27 * GLib.Math.pow(a, 2);
+
+            double C = (GLib.Math.pow(GLib.Math.sqrt((delta1 - (4 * (delta0 * delta0 * delta0))) + delta1), (1.0 / 3.0)) / 2.0);
+            double u = (-1 + GLib.Math.sqrt(-3)) / 2.0;
+
+            x1 = b + GLib.Math.pow(u, 1) * C + (delta0 / GLib.Math.pow(u, 1) * C) / (3 * a);
+            x2 = b + GLib.Math.pow(u, 2) * C + (delta0 / GLib.Math.pow(u, 2) * C) / (3 * a);
+            x3 = b + GLib.Math.pow(u, 3) * C + (delta0 / GLib.Math.pow(u, 3) * C) / (3 * a);
+        }
+
+        return { x1, x2, x3 };
+    }
+
     public double[] solve_as_racional(double[] values) {
         double[] solutions = {};
 
@@ -544,56 +674,21 @@ namespace Flotter {
     }
 
     public double[] solve_as_exponential(double[] values) {
+        // a^x + b = 0
+        // log(a^x) + log(b) = 0
+        // (x * log(a)) + log(b) = 0
+        // x * log(a) = -log(b)
+        // x = -log(b)
+        //     _______
+        //      log(a)
+
         double[] solutions = {};
 
+        double a = values[Flotter.A];
         double b = values[Flotter.B];
 
-        if (b < 0) {
-            solutions = { b + 1 };
-        }
+        solutions = { -GLib.Math.log(b) / GLib.Math.log(a) };
 
         return solutions;
     }
-
-    /*
-    public double[] solve_as_cubic(double[] values) {
-        double x1 = 0;
-        double x2 = 0;
-        double x3 = 0;
-
-        double a, b, c, d;
-        a = values[Flotter.A];
-        b = values[Flotter.B];
-        c = values[Flotter.C];
-        d = values[Flotter.D] - values[Flotter.E];
-
-        if (d == 0) {
-            // Example:
-            // 4x^3 - 5x^2 - x = 0
-            // x * (4x^2 - 5x - 1) = 0
-            // Solution 1:
-            //   x = 0
-            //
-            // Solution 2 n 3:
-            //   Solve as cuadratic
-
-            double[] other_solutions = Flotter.solve_as_cuadratic({ a, b, c });
-            x1 = 0;
-            x2 = other_solutions[1];
-            x3 = other_solutions[3];
-        } else if (d != 0) {
-            double delta0 = (b * b) - (3 * a * c);
-            double delta1 = (2 * GLib.Math.pow(b, 3)) - (9 * (a * b * c)) + (27 * GLib.Math.pow(a, 2) * d);
-            //double delta = ((delta1 * delta1) - (4 * GLib.Math.pow(delta0, 3))) / -27 * GLib.Math.pow(a, 2);
-
-            double C = (GLib.Math.pow(GLib.Math.sqrt((delta1 - (4 * (delta0 * delta0 * delta0))) + delta1), (1.0 / 3.0)) / 2.0);
-            double u = (-1 + GLib.Math.sqrt(-3)) / 2.0;
-
-            x1 = b + GLib.Math.pow(u, 1) * C + (delta0 / GLib.Math.pow(u, 1) * C) / (3 * a);
-            x2 = b + GLib.Math.pow(u, 2) * C + (delta0 / GLib.Math.pow(u, 2) * C) / (3 * a);
-            x3 = b + GLib.Math.pow(u, 3) * C + (delta0 / GLib.Math.pow(u, 3) * C) / (3 * a);
-        }
-
-        return { x1, x2, x3 };
-    }*/
 }
