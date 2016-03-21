@@ -6,11 +6,13 @@ namespace Flotter {
         public Flotter.ListView list_view;
         public Flotter.Area area;
         public Flotter.Entry entry;
+        public Flotter.SaveDialog save_dialog;
 
         public Window() {
             this.set_default_size(640, 480);
 
             this.headerbar = new Flotter.HeaderBar();
+            this.headerbar.save.connect(this.save_cb);
             this.set_titlebar(this.headerbar);
 
             Gtk.Box hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
@@ -39,6 +41,10 @@ namespace Flotter {
                 this.add_function(new Flotter.Function.from_values(Flotter.FunctionType.LINEAL, {3, 1}));
             }
 
+            this.save_dialog = new Flotter.SaveDialog(this.area);
+            this.save_dialog.set_transient_for(this);
+            this.save_dialog.hide();
+
             this.show_all();
         }
 
@@ -58,6 +64,10 @@ namespace Flotter {
         private void show_notable_points_cb(Flotter.Function function, bool show) {
             function.show_notable_points = show;
             this.area.update();
+        }
+
+        private void save_cb(Flotter.HeaderBar headerbar) {
+            this.save_dialog.show_all();
         }
 
         public void add_function(Flotter.Function function) {

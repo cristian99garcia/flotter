@@ -16,6 +16,8 @@ namespace Flotter {
 
         public Flotter.Function? selected_function = null;
 
+        public Cairo.Context context;
+
         public Area() {
             Flotter.show_msg("STARTING: src/area.vala Flotter.Area");
 
@@ -35,6 +37,8 @@ namespace Flotter {
 
         private bool draw_cb(Gtk.Widget widget, Cairo.Context context) {
             Flotter.show_msg("src/area.vala Flotter.Area.draw_cb");
+
+            this.context = context;
 
             this.draw_background(context);
             this.draw_axes(context);
@@ -357,6 +361,16 @@ namespace Flotter {
         public void select_function(Flotter.Function? function) {
             this.selected_function = function;
             this.update();
+        }
+
+        public Gdk.Pixbuf get_pixbuf() {
+            this.update();
+
+            Cairo.Surface surface = this.context.get_target();
+            Gtk.Allocation alloc;
+            this.get_allocation(out alloc);
+
+            return Gdk.pixbuf_get_from_surface(surface, 0, 0, alloc.width, alloc.height);
         }
     }
 }
