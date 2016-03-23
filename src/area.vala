@@ -231,6 +231,8 @@ namespace Flotter {
         private void draw_functions(Cairo.Context context) {
             Flotter.show_msg("src/area.vala Flotter.Area.draw_functions");
 
+            double[] size = this.get_size(true);
+
             foreach (Flotter.Function function in this.functions) {
                 Flotter.show_msg("src/area.vala Flotter.Area.draw_functions: Type: %s Formula: %s".printf(function.type.to_string(), function.get_formula()), function.type);
 
@@ -250,6 +252,12 @@ namespace Flotter {
                     for (double _i=0.05; _i <= 1.0; _i += 0.05) {
                         double number = i + _i;
                         this.get_coordinates(number, function.get_y(number), out x, out y);
+
+                        if (x < -100 || x > size[Flotter.WIDTH] + 100 ||
+                            y < -100 || y > size[Flotter.HEIGHT] + 100) {
+                                context.move_to(x, y);
+                                continue;
+                            }
 
                         if (function.type == Flotter.FunctionType.EXPONENTIAL) {
                             if (y < 0.0001) {
