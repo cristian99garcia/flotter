@@ -248,28 +248,28 @@ namespace Flotter {
                 context.move_to(x, y);
                 context.set_source_rgb(function.color[0], function.color[1], function.color[2]);
 
-                for (int i=this.get_first_x(); i <= this.get_last_x(); i++) {
-                    for (double _i=0.05; _i <= 1.0; _i += 0.05) {
-                        double number = i + _i;
-                        this.get_coordinates(number, function.get_y(number), out x, out y);
+                for (double i=this.get_first_x(); i <= this.get_last_x(); i += 0.05) {
+                    this.get_coordinates(i, function.get_y(i), out x, out y);
 
-                        if (x < -100 || x > size[Flotter.WIDTH] + 100 ||
-                            y < -100 || y > size[Flotter.HEIGHT] + 100) {
-                                context.move_to(x, y);
-                                continue;
-                            }
-
-                        if (function.type == Flotter.FunctionType.EXPONENTIAL) {
-                            if (y < 0.0001) {
-                                y = 0;
-                            }
-                        }
-
-                        context.line_to(x, y);
-                        context.stroke();
+                    if (x < -1000 || x > size[Flotter.WIDTH] + 1000 ||
+                        y < -1000 || y > size[Flotter.HEIGHT] + 1000) {
 
                         context.move_to(x, y);
+                        continue;
                     }
+
+                    if (function.type == Flotter.FunctionType.EXPONENTIAL) {
+                        if (y < 0.0001) {
+                            y = 0;
+                        }
+                    } else if (function.type == Flotter.FunctionType.RACIONAL) {
+
+                    }
+
+                    context.line_to(x, y);
+                    context.stroke();
+
+                    context.move_to(x, y);
                 }
 
                 if (function.show_notable_points) {
