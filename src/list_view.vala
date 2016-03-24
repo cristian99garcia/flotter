@@ -194,7 +194,7 @@ namespace Flotter {
             this.rows = { };
             this.set_orientation(Gtk.Orientation.VERTICAL);
 
-            string theme = "GtkEventBox { background-color: rgb(255, 255, 255) }";
+            string theme = "GtkBox { background-color: rgb(255, 255, 255) }";
             Flotter.apply_theme(this, theme);
 
             this.button_press_event.connect(this.button_press_cb);
