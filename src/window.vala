@@ -2,7 +2,7 @@ namespace Flotter {
 
     public class Window: Gtk.ApplicationWindow {
 
-        public Flotter.HeaderBar headerbar;
+        //public Flotter.HeaderBar headerbar;
         public Flotter.ListView list_view;
         public Flotter.Area area;
         public Flotter.Entry entry;
@@ -10,10 +10,11 @@ namespace Flotter {
 
         public Window() {
             this.set_default_size(640, 480);
+            this.set_title("Flotter");
 
-            this.headerbar = new Flotter.HeaderBar();
-            this.headerbar.save.connect(this.save_cb);
-            this.set_titlebar(this.headerbar);
+            //this.headerbar = new Flotter.HeaderBar();
+            //this.headerbar.save.connect(this.save_cb);
+            //this.set_titlebar(this.headerbar);
 
             Gtk.Paned paned = new Gtk.Paned(Gtk.Orientation.HORIZONTAL);
             this.add(paned);
@@ -70,9 +71,9 @@ namespace Flotter {
             this.area.update();
         }
 
-        private void save_cb(Flotter.HeaderBar headerbar) {
-            this.save_dialog.show_all();
-        }
+        //private void save_cb(Flotter.HeaderBar headerbar) {
+        //    this.save_dialog.show_all();
+        //}
 
         public void add_function(Flotter.Function function) {
             this.area.add_function(function);
