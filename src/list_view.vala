@@ -209,14 +209,6 @@ namespace Flotter {
 
             foreach (Flotter.ListViewRow _row in this.rows) {
                 _row.set_selected(_row == row);
-
-                //if (_row == row) {
-                //    _row.state = Flotter.ListViewRowState.ACTIVATED;
-                //} else {
-                //    _row.state = Flotter.ListViewRowState.DISACTIVATED;
-                //}
-
-                _row.update_theme();
             }
 
             if (row == null) {

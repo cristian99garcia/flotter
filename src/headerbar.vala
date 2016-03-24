@@ -13,7 +13,7 @@ namespace Flotter {
             this.save_button = new Gtk.Button();
             this.save_button.set_image(new Gtk.Image.from_icon_name("document-save-symbolic", Gtk.IconSize.BUTTON));
             this.save_button.clicked.connect(() => { this.save(); });
-            this.pack_end(this.save_button);
+            //this.pack_end(this.save_button);
         }
     }
 }
