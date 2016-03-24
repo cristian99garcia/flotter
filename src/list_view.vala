@@ -7,6 +7,7 @@ namespace Flotter {
         public signal void show_notable_points(bool show);
         public signal void selected();
         public signal void unselected();
+        public signal void show_data();
 
         public Flotter.Function function;
 
@@ -184,6 +185,7 @@ namespace Flotter {
         public signal void function_removed(Flotter.Function function);
         public signal void color_changed(Flotter.Function function, double[] color);
         public signal void show_notable_points(Flotter.Function function, bool show);
+        public signal void show_data(Flotter.Function function);
 
         public Flotter.ListViewRow[] rows;
         public Gtk.Box list_view;
@@ -264,6 +266,7 @@ namespace Flotter {
             row.show_notable_points.connect(this.show_notable_points_cb);
             row.selected.connect(this.row_selected_cb);
             row.unselected.connect(() => { this.row_selected_cb(null); });
+            row.show_data.connect(() => { this.show_data(row.function); });
 
             Flotter.ListViewRow[] rows = this.rows;
             rows += row;
