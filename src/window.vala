@@ -15,18 +15,22 @@ namespace Flotter {
             this.headerbar.save.connect(this.save_cb);
             this.set_titlebar(this.headerbar);
 
-            Gtk.Box hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-            this.add(hbox);
+            Gtk.Paned paned = new Gtk.Paned(Gtk.Orientation.HORIZONTAL);
+            this.add(paned);
+
+            Gtk.ScrolledWindow scroll = new Gtk.ScrolledWindow(null, null);
+            scroll.set_size_request(200, -1);
+            paned.pack1(scroll, false, false);
 
             this.list_view = new Flotter.ListView();
             this.list_view.selection_changed.connect(this.selection_changed_cb);
             this.list_view.function_removed.connect(this.function_removed_cb);
             this.list_view.color_changed.connect(this.color_changed_cb);
             this.list_view.show_notable_points.connect(this.show_notable_points_cb);
-            hbox.pack_start(this.list_view, false, false, 0);
+            scroll.add(this.list_view);
 
             Gtk.Box vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
-            hbox.pack_end(vbox, true, true, 0);
+            paned.pack2(vbox, true, true);
 
             this.area = new Flotter.Area();
             vbox.pack_start(this.area, true, true, 0);

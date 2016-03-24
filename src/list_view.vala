@@ -192,7 +192,6 @@ namespace Flotter {
             Flotter.show_msg("STARTING: src/list_view.vala Flotter.ListView");
 
             this.rows = { };
-            this.set_size_request(200, 1);
             this.set_orientation(Gtk.Orientation.VERTICAL);
 
             string theme = "GtkEventBox { background-color: rgb(255, 255, 255) }";
