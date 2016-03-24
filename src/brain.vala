@@ -369,5 +369,10 @@ namespace Flotter {
 
             return points;
         }
+
+        public Flotter.Function get_derived() {
+
+            return this;
+        }
     }
 }

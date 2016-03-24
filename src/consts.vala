@@ -35,4 +35,10 @@ namespace Flotter {
         RACIONAL,
         EXPONENTIAL
     }
+
+    public enum ListViewRowState {
+        ACTIVATED,
+        DISACTIVATED,
+        MOUSE_OVER,
+    }
 }
