@@ -44,14 +44,19 @@ namespace Flotter {
             }
 
             bool plural = (this.function.get_roots().length > 1);
-            Gtk.Label tlabel = new Gtk.Label("¿Cómo calcular %s %s?".printf(plural? "las": "la", plural? "raices": "raíz"));
-            tlabel.set_xalign(0);
-            this.box.pack_start(tlabel, false, false, 0);
+            string[] pre_words = {};
+            pre_words += "¿Cómo calcular %s %s?".printf(plural? "las": "la", plural? "raices": "raíz");
+            pre_words += "";
+            pre_words += "Como queremos obtener el punto de la función que tiene como ordenada 0, igualamos a 0 y luego resolvemos:";
 
-            foreach (string s in steps) {
-                string step = Flotter.clean_double(s);
+            foreach (string frase in pre_words) {
+                Gtk.Label label = new Gtk.Label(frase);
+                label.set_xalign(0);
+                this.box.pack_start(label, false, false, 0);
+            }
 
-                Gtk.Label label = new Gtk.Label(step);
+            foreach (string step in steps) {
+                Gtk.Label label = new Gtk.Label(Flotter.clean_double(step));
                 label.set_xalign(0);
                 this.box.pack_start(label, false, false, 0);
             }
