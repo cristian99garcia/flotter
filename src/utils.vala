@@ -520,6 +520,56 @@ namespace Flotter {
         return solution;
     }
 
+    public string[] solve_as_lineal_step_by_step(double[] values) {
+        // 3x + 1 = 0
+        // 3x = -1
+        // x = -1 / 3
+
+        string[] steps = { };
+        string step = "";
+        double a = values[Flotter.A];
+        double b = values[Flotter.B];
+        bool has_b = (b != 0);
+
+        step += "%fx".printf(a);
+
+        if (has_b) {
+            if (b > 0) {
+                step += " +";
+            }
+            step += " %f".printf(b);
+        }
+
+        step += " = 0";
+        steps += step;
+        step = "";
+
+        // 3x = -1
+        if (has_b) {
+            step = "%fx = ".printf(a);
+            step += "%f".printf(b * -1);
+            steps += step;
+            step = "";
+        }
+
+        if (has_b && b % (a * -1) == 0) {
+            step = "S = { %f }".printf(b / (a * -1));
+            steps += step;
+        } else if (has_b && b % (a * -1) != 0) {
+            if ((a < 0 && -b > 0) || (-b < 0 && a > 0)) {
+                step = "S = { -%f / %f }".printf((a < 0)? a * -1: a, (b < 0)? b * -1: b);
+            } else {
+                step = "S = { %f / %f }".printf((a < 0)? a * -1: a, (b < 0)? b * -1: b);
+            }
+            steps += step;
+        } else if (!has_b) {
+            step = "S = { 0 }";
+            steps += step;
+        }
+
+        return steps;
+    }
+
     public double[] solve_as_cuadratic(double[] values) {
         double[] solutions = { };
 

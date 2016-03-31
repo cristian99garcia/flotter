@@ -28,6 +28,7 @@ namespace Flotter {
             this.list_view.function_removed.connect(this.function_removed_cb);
             this.list_view.color_changed.connect(this.color_changed_cb);
             this.list_view.show_notable_points.connect(this.show_notable_points_cb);
+            this.list_view.show_help_dialog.connect(this.show_help_dialog_cb);
             scroll.add(this.list_view);
 
             Gtk.Box vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
@@ -71,6 +72,11 @@ namespace Flotter {
             this.area.update();
         }
 
+        private void show_help_dialog_cb(Flotter.Function function) {
+            Flotter.HelpDialog dialog = new Flotter.HelpDialog(function);
+            dialog.set_transient_for(this);
+            dialog.show_all();
+        }
         //private void save_cb(Flotter.HeaderBar headerbar) {
         //    this.save_dialog.show_all();
         //}

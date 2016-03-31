@@ -4,6 +4,7 @@ SRC = src/flotter.vala \
       src/entry.vala \
       src/list_view.vala \
       src/save_dialog.vala \
+      src/help_dialog.vala \
       src/brain.vala \
       src/utils.vala \
       src/consts.vala

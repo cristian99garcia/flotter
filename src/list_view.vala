@@ -8,6 +8,7 @@ namespace Flotter {
         public signal void selected();
         public signal void unselected();
         public signal void show_data();
+        public signal void show_help_dialog();
 
         public Flotter.Function function;
 
@@ -15,6 +16,7 @@ namespace Flotter {
         public Gtk.CheckButton check_button;
         public Gtk.ColorButton color_button;
         public Gtk.Label label;
+        public Gtk.Button help_button;
         public Gtk.Button close_button;
 
         public Flotter.ListViewRowState state = Flotter.ListViewRowState.DISACTIVATED;
@@ -56,13 +58,18 @@ namespace Flotter {
 
             this.close_button = new Gtk.Button();
             this.close_button.set_image(new Gtk.Image.from_icon_name("window-close-symbolic", Gtk.IconSize.MENU));
-            this.close_button.set_border_width(0);
 
             string theme = "GtkButton { border-width: 0px; border-radius: 50px; }";
             Flotter.apply_theme(this.close_button, theme);
 
             this.close_button.clicked.connect(this.clicked_cb);
             this.box.pack_end(this.close_button, false, false, 0);
+
+            this.help_button = new Gtk.Button();
+            this.help_button.set_image(new Gtk.Image.from_icon_name("help-about-symbolic", Gtk.IconSize.MENU));
+            this.help_button.button_release_event.connect(this.ignore_help_button);
+            this.help_button.clicked.connect(() => { this.show_help_dialog(); });
+            this.box.pack_end(this.help_button, false, false, 0);
 
             this.enter_notify_event.connect(this.mouse_enter_cb);
             this.leave_notify_event.connect(this.mouse_leave_cb);
@@ -80,6 +87,11 @@ namespace Flotter {
 
         private bool ignore_color_button(Gtk.Widget button, Gdk.EventButton event) {
             this.color_button.clicked();
+            return true;
+        }
+
+        private bool ignore_help_button(Gtk.Widget button, Gdk.EventButton event) {
+            this.help_button.clicked();
             return true;
         }
 
@@ -186,6 +198,7 @@ namespace Flotter {
         public signal void color_changed(Flotter.Function function, double[] color);
         public signal void show_notable_points(Flotter.Function function, bool show);
         public signal void show_data(Flotter.Function function);
+        public new signal void show_help_dialog(Flotter.Function function);
 
         public Flotter.ListViewRow[] rows;
         public Gtk.Box list_view;
@@ -267,6 +280,7 @@ namespace Flotter {
             row.selected.connect(this.row_selected_cb);
             row.unselected.connect(() => { this.row_selected_cb(null); });
             row.show_data.connect(() => { this.show_data(row.function); });
+            row.show_help_dialog.connect(() => { this.show_help_dialog(row.function); });
 
             Flotter.ListViewRow[] rows = this.rows;
             rows += row;
