@@ -570,6 +570,28 @@ namespace Flotter {
         return steps;
     }
 
+    public string[] get_intercept_as_lineal_step_by_step(double[] values, string? name = null) {
+        string[] steps = { };
+        string step = "%s(0) = ".printf((name != null)? name: "F");
+        double a = values[Flotter.A];
+        double b = values[Flotter.B];
+
+        step += "%f·0".printf(a);
+
+        if (b != 0) {
+            if (b < 0) {
+                step += " %f".printf(b);
+            } else {
+                step += " + %f".printf(b);
+            }
+        }
+
+        steps += step;
+        steps += "%s(0) = %f".printf((name != null)? name: "F", b);
+
+        return steps;
+    }
+
     public double[] solve_as_cuadratic(double[] values) {
         double[] solutions = { };
 
@@ -866,6 +888,32 @@ namespace Flotter {
         } else if (a == 0) {
             return Flotter.solve_as_lineal_step_by_step(values);
         }
+
+        return steps;
+    }
+
+    public string[] get_intercept_as_cuadratic_step_by_step(double[] values, string? name = null) {
+        string[] steps = { };
+        double a = values[Flotter.A];
+        double b = values[Flotter.B];
+        double c = values[Flotter.C];
+
+        string step = "%s(0) = %f·0²".printf((name != null)? name: "F", a);
+
+        if (b < 0) {
+            step += " %f·0".printf(b);
+        } else if (b > 0) {
+            step += " + %f·0".printf(b);
+        }
+
+        if (c < 0) {
+            step += " %f".printf(c);
+        } else if (c > 0) {
+            step += " + %f".printf(c);
+        }
+
+        steps += step;
+        steps += "%s(0) = %f".printf((name != null)? name: "F", c);
 
         return steps;
     }
