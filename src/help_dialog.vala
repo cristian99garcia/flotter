@@ -30,7 +30,7 @@ namespace Flotter {
                     break;
 
                 case Flotter.FunctionType.CUADRATIC:
-
+                    steps = Flotter.solve_as_cuadratic_step_by_step(this.function.values);
                     break;
 
                 case Flotter.FunctionType.CUBIC:
@@ -50,7 +50,8 @@ namespace Flotter {
             pre_words += "Como queremos obtener el punto de la función que tiene como ordenada 0, igualamos a 0 y luego resolvemos:";
 
             foreach (string frase in pre_words) {
-                Gtk.Label label = new Gtk.Label(frase);
+                Gtk.Label label = new Gtk.Label(null);
+                label.set_markup(frase);
                 label.set_xalign(0);
                 this.box.pack_start(label, false, false, 0);
             }

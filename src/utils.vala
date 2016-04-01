@@ -642,6 +642,238 @@ namespace Flotter {
         return solutions;
     }
 
+    public string[] solve_as_cuadratic_step_by_step(double[] values) {
+        string[] steps = { };
+        string step = "";
+
+        double a = values[Flotter.A];
+        double b = values[Flotter.B];
+        double c = values[Flotter.C];
+
+        step += "%fx^2".printf(a);
+
+        if (b != 0) {
+            if (b > 0) {
+                step += " +";
+            }
+            step += " %fx".printf(b);
+        }
+
+        if (c != 0) {
+            if (c > 0) {
+                step += " +";
+            }
+            step += " %f".printf(c);
+        }
+
+        step += " = 0";
+        steps += step;
+        step = "";
+
+        if (a != 0 && b != 0 && c != 0) {
+            // Bhaskara:
+            //  -b +- √(b^2 -4ac)
+            //  ________________
+            //        2a
+
+            double z = GLib.Math.pow(b, 2) - (4 * (a * c));
+
+            steps += "Como a, b y c son distintos a 0, intentamos aplicar bhaskara:";
+            steps += "    -b ± √(b² -4ac)";
+            steps += "x = _______________";
+            steps += "           2a      ";
+            steps += "Para eso, <b>b² -4ac</b> debe ser mayor a 0, ya que no existen raices cuadradas de números negativos:";
+            steps += "b² -4ac = %f".printf(z);
+            if (z >= 0) {
+                steps += "Como <b>b² -4ac</b> es mayor a 0 podemos aplicar bhaskara:";
+
+                steps += "%f ± √(%f² -4·%f·%f)".printf(b * -1, b, a, c);
+                step = "x = ";
+
+                for (int i=0; i <= steps[-1].length; i++) {
+                    step += "_";
+                }
+
+                steps += step;
+
+                steps += "     2·%f      ".printf(a);
+                steps += "";
+
+                double z2 = 4 * a * c;
+                steps += "    %f ± √%f %s %f".printf(b * -1, GLib.Math.pow(b, 2), (z2 > 0)? "+": "", z2);
+                steps += step;
+
+                steps += "         %f         ".printf(2 * a);
+                steps += "";
+
+                steps += "%f ± √%f".printf(b * -1, z);
+                steps += step;
+                steps += "       %f       ".printf(2 * a);
+                steps += "";
+
+                steps += "Ahora hay que tomar la raíz positiva y la negativa:";
+                steps += "Empezamos con la positiva:";
+                steps += "    %f + √%f".printf(b * -1, z);
+                steps += "x = ________";
+                steps += "       %f   ".printf(2 * a);
+                steps += "     %f".printf(b * -1 + GLib.Math.sqrt(z));
+                steps += "x = ____";
+                steps += "     %f".printf(2 * a);
+                steps += " x = %f".printf((b * -1 + GLib.Math.sqrt(z)) / (2 * a));
+                steps += "";
+                steps += "Seguimos con la raíz negativa:";
+                steps += "    %f - √%f".printf(b * -1, z);
+                steps += "x = ________";
+                steps += "       %f   ".printf(2 * a);
+                steps += "     %f".printf(b * -1 - GLib.Math.sqrt(z));
+                steps += "x = ____";
+                steps += "     %f".printf(2 * a);
+                steps += " x = %f".printf((b * -1 - GLib.Math.sqrt(z)) / (2 * a));
+                steps += "";
+                steps += "S = { %f; %f }".printf((b * -1 + GLib.Math.sqrt(z)) / (2 * a), (b * -1 - GLib.Math.sqrt(z)) / (2 * a));
+            } else {
+                steps += "Como <b>b² -4ac</b> es menor que 0, no podemos aplicar bhaskara, por lo cual esta función no tiene raices";
+                steps += "S = ø";
+            }
+        } else if (a != 0 && b != 0 && c == 0) {
+            // Example:
+            //   8x^2 - 16x = 0
+            //   8x * (x - 2) = 0
+            //  By Hankel:
+            //    Solution 1:
+            //      x == 0
+            //
+            //    Solution 2:
+            //      x - 2 == 0
+            //      x = 2
+
+            step = "%fx^2";
+            if (b < 0) {
+                step += " %fx".printf(b);
+            } else {
+                step += " + %fx".printf(b);
+            }
+
+            step += " = 0";
+            steps += step;
+            steps += "Podemos factorizar:";
+            step = "x (%fx".printf(a);
+
+            if (b < 0) {
+                step += " %f)".printf(b);
+            } else {
+                step += " + %f)".printf(b);
+            }
+
+            step += " = 0";
+            steps += step;
+            steps += "Ahora aplicamos la hankeliana:";
+            steps += "x = 0";
+            step = "%fx".printf(a);
+
+            if (b < 0) {
+                step += " %f".printf(b);
+            } else {
+                step += " + %f".printf(b);
+            }
+
+            steps += step;
+            steps += "%fx = %f".printf(a, b * -1);
+            steps += "x = %f / %f".printf(b * -1, a);
+
+            if (b * -1 % a == 0) {
+                steps += "S = { 0, %f }".printf((b * -1) / a);
+            } else {
+                steps += "S = { 0, %f / %f }".printf(b * -1, a);
+            }
+        } else if (a != 0 && b == 0 && c != 0) {
+            if (c < 0) {
+                // Example:
+                //   2x^2 - 64 = 0
+                //   2x^2 = 64
+                //   Solution 1:
+                //     2x = √64
+                //     2x = 8
+                //     x = 4
+                //
+                //   Solution 2:
+                //     2x = √64
+                //     2x = -8
+                //     x = -4
+                step = "%fx²";
+
+                if (c < 0) {
+                    step += " %f".printf(c);
+                } else {
+                    step += " + %f".printf(c);
+                }
+
+                step += " = 0";
+                steps += step;
+                steps += "%fx² = %f".printf(a, -c);
+                steps += "Primera raíz:";
+                steps += "%fx = √%f".printf(a, -c);
+                steps += "%fx = %f".printf(a, -GLib.Math.sqrt(c));
+                steps += "x = %f / %f".printf(-GLib.Math.sqrt(c), a);
+
+                string root1;
+                if (-GLib.Math.sqrt(c) % a == 0) {
+                    root1 = (-GLib.Math.sqrt(c) / a).to_string();
+                    steps += "x = %s".printf(root1);
+                } else {
+                    root1 = "%f / %f".printf(-GLib.Math.sqrt(c), a);
+                }
+
+                steps += "";
+                steps += "Segunda raíz:";
+                steps += "%fx = √%f".printf(a, -c);
+                steps += "%fx = %f".printf(a, GLib.Math.sqrt(c));
+                steps += "x = %f / %f".printf(GLib.Math.sqrt(c), a);
+
+                string root2;
+                if (GLib.Math.sqrt(c) % a == 0) {
+                    root2 = (GLib.Math.sqrt(c) / a).to_string();
+                    steps += "x = %s".printf(root2);
+                } else {
+                    root2 = "%f / %f".printf(GLib.Math.sqrt(c), a);
+                }
+
+                steps += "S = { %s; %s }".printf(root1, root2);
+            } else {
+                step = "%fx^2";
+
+                if (c < 0) {
+                    step += " %f".printf(c);
+                } else {
+                    step += " + %f".printf(c);
+                }
+
+                step += " = 0";
+                steps += step;
+                steps += "%fx² = %f".printf(a, -c);
+                steps += "%fx = √%f".printf(a, -c);
+                steps += "No existen raices reales para un número negativo";
+                steps += "S = ø";
+            }
+        } else if (a != 0 && b == 0 && c == 0) {
+            // Example:
+            //   4x^2 = 0
+            //   √4x^2 = √0
+            //   4x = 0
+            //   x = 0
+            steps += "%fx² = 0".printf(a);
+            steps += "√%fx² = √0".printf(a);
+            steps += "%fx = 0".printf(a);
+            steps += "Como cualquier número multiplicado por 0 da 0, se dice que la ecuación tiene raíz doble";
+            steps += "S = { 0, 0 }";
+
+        } else if (a == 0) {
+            return Flotter.solve_as_lineal_step_by_step(values);
+        }
+
+        return steps;
+    }
+
     public double[] solve_as_cubic(double[] values) {
         double x1 = 0;
         double x2 = 0;
