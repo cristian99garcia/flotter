@@ -45,7 +45,7 @@ namespace Flotter {
 
             bool plural = (this.function.get_roots().length > 1);
             string[] pre_words = {};
-            pre_words += "¿Cómo calcular %s %s?".printf(plural? "las": "la", plural? "raices": "raíz");
+            pre_words += "<b><big>¿Cómo calcular %s %s?</big></b>".printf(plural? "las": "la", plural? "raices": "raíz");
             pre_words += "";
             pre_words += "Como queremos obtener el punto de la función que tiene como ordenada 0, igualamos a 0 y luego resolvemos:";
 
@@ -57,7 +57,8 @@ namespace Flotter {
             }
 
             foreach (string step in steps) {
-                Gtk.Label label = new Gtk.Label(Flotter.clean_double(step));
+                Gtk.Label label = new Gtk.Label(null);
+                label.set_markup(Flotter.clean_double(step));
                 label.set_xalign(0);
                 this.box.pack_start(label, false, false, 0);
             }
