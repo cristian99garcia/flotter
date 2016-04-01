@@ -687,16 +687,12 @@ namespace Flotter {
             if (z >= 0) {
                 steps += "Como <b>b² -4ac</b> es mayor a 0 podemos aplicar bhaskara:";
 
-                steps += "%f ± √(%f² -4·%f·%f)".printf(b * -1, b, a, c);
-                step = "x = ";
-
-                for (int i=0; i <= steps[-1].length; i++) {
-                    step += "_";
-                }
+                steps += "      %f ± √(%f² -4·%f·%f)".printf(b * -1, b, a, c);
+                step = "x = ________________";
 
                 steps += step;
 
-                steps += "     2·%f      ".printf(a);
+                steps += "             2·%f      ".printf(a);
                 steps += "";
 
                 double z2 = 4 * a * c;
