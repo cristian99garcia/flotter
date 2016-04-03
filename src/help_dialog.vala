@@ -47,6 +47,8 @@ namespace Flotter {
                     break;
 
                 case Flotter.FunctionType.RACIONAL:
+                    steps1 = Flotter.solve_as_racional_step_by_step(this.function.values);
+                    steps2 = Flotter.get_intercept_as_racional_step_by_step(this.function.values, this.function.name);
                     break;
 
                 case Flotter.FunctionType.EXPONENTIAL:

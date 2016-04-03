@@ -969,15 +969,16 @@ namespace Flotter {
 
         if (a != 0 && b != 0) {
             // Example:
-            //  3x + 6
+            //  3x - 6
             //  ______ = 0
             //  x + 3
             //
-            // 3x + 6 = 0
-            // x = 6 / 2 = 3
+            // 3x - 6 = 0
+            // 3x = 6
+            // x = 2
 
-            solutions = { a / b };
-        } else if (a != 0 && b == 0 && d != 0) {
+            solutions = { -b / a };
+        } else if (a != 0 && b == 0 && (c != 0 || d != 0)) {
             // Example:
             //     2x
             //  _______ = 0
@@ -990,13 +991,146 @@ namespace Flotter {
             //    x = 0
 
             solutions = { 0 };
-        } else if (a != 0 && b != 0 && c != 0 && d == 0) {
-            solutions =  { };
-        } else if (c == 0) {
-            solutions = { 0 };
         }
 
         return solutions;
+    }
+
+    public string[] solve_as_racional_step_by_step(double[] values, string? name = null) {
+        string[] steps = { };
+        string step = "";
+
+        double a = values[Flotter.A];
+        double b = values[Flotter.B];
+        double c = values[Flotter.C];
+        double d = values[Flotter.D];
+
+        step += "%s(x) = ".printf((name != null)? name: "F");
+
+        if (a != 0) {
+            steps += "%fx".printf(a);
+        }
+
+        if (b > 0 && a != 0) {
+            step += " + %f".printf(b);
+        } else if (b > 0 && a == 0) {
+            step += "%f".printf(b);
+        } else if (b < 0 && a != 0) {
+            step += " %f".printf(b);
+        } else {
+            step += "%f".printf(b);
+        }
+
+        steps += step;
+        steps += "    ________";
+        step = "";
+
+        if (c != 0) {
+            step += "%fx".printf(c);
+        }
+
+        if (d > 0 && c != 0) {
+            step += " + %f".printf(d);
+        } else if (d > 0 && c == 0) {
+            step += "%f".printf(b);
+        } else if (d < 0 && c != 0) {
+            step += " %f".printf(d);
+        } else {
+            step += "%f".printf(d);
+        }
+
+        steps += step;
+
+        if (a != 0 && b != 0) {
+            steps += "Como el único número que al ser dividido da 0, podemos igualar el numerador a 0";
+            step = "%fx".printf(a);
+
+            if (b > 0) {
+                step += " + %f".printf(b);
+            } else if (b < 0 && a != 0) {
+                step += " %f".printf(b);
+            }
+
+            step += " = 0";
+            steps += step;
+            steps += "%fx = %f".printf(a, -b);
+            steps += "x = %f / %f".printf(-b, a);
+
+            if (-b % a == 0) {
+                steps += "x = %f".printf(-b / a);
+                steps += "S = { %f }".printf(-b / a);
+            } else {
+                steps += "S = { %f / %f }".printf(-b, a);
+            }
+        } else if (a != 0 && b == 0 && (c != 0 || d != 0)) {
+            steps += "%fx".printf(a);
+            steps += "________ = 0";
+            step = "";
+
+            if (c != 0) {
+                step = "%fx".printf(c);
+            }
+
+            if (d > 0 && c != 0) {
+                step += " + %f".printf(d);
+            } else if (d < 0) {
+                step += "%f".printf(d);
+            }
+
+            steps += "Como el único número que al ser dividido da 0, podemos igualar el numerador a 0";
+            steps += "%fx = 0".printf(a);
+            steps += "x = 0";
+            steps += "S = { 0 }";
+        }
+
+        return steps;
+    }
+    
+    public string[] get_intercept_as_racional_step_by_step(double[] values, string? name = null) {
+        string[] steps = { };
+        double a = values[Flotter.A];
+        double b = values[Flotter.B];
+        double c = values[Flotter.C];
+        double d = values[Flotter.D];
+        string step = "%s(0) = %f·0²".printf((name != null)? name: "F", a);
+
+        if (a != 0) {
+            step += "%f·0 ".printf(a);
+        }
+
+        if (b > 0 && a != 0) {
+            step += "+ %f".printf(b);
+        } else if (b != 0) {
+            step += "%f".printf(b);
+        }
+        
+        steps += step;
+        steps += "   _________";
+        step = "";
+
+        if (c != 0) {
+            step += "    %f·0 ".printf(c);
+        }
+
+        if (d > 0 && c != 0) {
+            step += "+ %f".printf(d);
+        } else if (d != 0) {
+            step += "%f".printf(d);
+        }
+
+        steps += step;
+        steps += "";
+        steps += "%s(0) = %f / %f".printf((name != null)? name: "F", b, d);
+
+        if (d != 0) {
+            if (b % d == 0) {
+                steps += "%s(0) = %f".printf((name != null)? name: "F", b / d);
+            }
+        } else {
+            steps += "<b>Las divisiones entre 0 no existen</b>, por lo cual la función no tiene ordenada en el origen.";
+        }
+
+        return steps;
     }
 
     public double[] solve_as_exponential(double[] values) {
