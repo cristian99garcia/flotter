@@ -5,17 +5,36 @@ namespace Flotter {
         public Flotter.Function function;
 
         public Gtk.Box box;
+        public Gtk.ScrolledWindow scroll;
+        public Gtk.Box scrolled_box;
 
         public HelpDialog(Flotter.Function function) {
             this.function = function;
 
-            this.box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-            this.add(this.box);
-
             this.set_modal(true);
             this.set_title("Ayuda");
             this.set_border_width(10);
+            this.set_default_size(450, 300);
+
+            this.box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+            this.add(this.box);
+
+            this.scroll = new Gtk.ScrolledWindow(null, null);
+            this.box.pack_start(this.scroll, true, true, 0);
+
+            this.scrolled_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+            this.scroll.add(this.scrolled_box);
+
             this.load_data();
+        }
+
+        private void make_label(string text, Gtk.Box box, bool bold = false, int size = 12) {
+            Gtk.Label label = new Gtk.Label(null);
+            label.set_markup(Flotter.clean_double(text));
+            label.set_xalign(0);
+            label.set_selectable(true);
+            Flotter.apply_theme(label, "GtkLabel { font: Monospace %s %d; }".printf(bold? "bold": "", size));
+            box.pack_start(label, false, false, 0);
         }
 
         public void load_data() {
@@ -23,10 +42,10 @@ namespace Flotter {
             string[] steps2 = { };
 
             Gtk.Box box1 = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
-            this.box.pack_start(box1, false, false, 0);
+            this.scrolled_box.pack_start(box1, false, false, 0);
 
             Gtk.Box box2 = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
-            this.box.pack_start(box2, false, false, 0);
+            this.scrolled_box.pack_start(box2, false, false, 0);
 
             switch (this.function.type) {
                 case Flotter.FunctionType.CONST:
@@ -56,43 +75,32 @@ namespace Flotter {
             }
 
             bool plural = (this.function.get_roots().length > 1);
-            string[] pre_words = {};
-            pre_words += "<b><big>¿Cómo calcular %s?</big></b>".printf(plural? "las raices": "la raíz");
-            pre_words += "";
+            this.make_label("¿Cómo calcular %s?".printf(plural? "las raices": "la raíz"), box1, true, 14);
+
+            string[] pre_words = { "" };
             pre_words += "Como queremos obtener la preimagen del 0, igualamos a 0 y luego resolvemos:";
 
             foreach (string frase in pre_words) {
-                Gtk.Label label = new Gtk.Label(null);
-                label.set_markup(frase);
-                label.set_xalign(0);
-                box1.pack_start(label, false, false, 0);
+                this.make_label(frase, box1);
             }
 
             foreach (string step in steps1) {
-                Gtk.Label label = new Gtk.Label(null);
-                label.set_markup(Flotter.clean_double(step));
-                label.set_xalign(0);
-                box1.pack_start(label, false, false, 0);
+                this.make_label(step, box1);
             }
 
             plural = (this.function.get_intercepts().length > 1);
-            pre_words = {};
-            pre_words += "<b>¿Cómo calcular %s?</b>".printf(plural? "las ordenadas en el origen": "la ordenada en el origen");
-            pre_words += "";
+            this.make_label("", box2);
+            this.make_label("¿Cómo calcular %s?".printf(plural? "las ordenadas en el origen": "la ordenada en el origen"), box2, true, 14);
+
+            pre_words = { "" };
             pre_words += "Como queremos obtener la imagen del 0, reemplazamos las x por 0:";
 
             foreach (string frase in pre_words) {
-                Gtk.Label label = new Gtk.Label(null);
-                label.set_markup(frase);
-                label.set_xalign(0);
-                box2.pack_start(label, false, false, 0);
+                this.make_label(frase, box2);
             }
 
             foreach (string step in steps2) {
-                Gtk.Label label = new Gtk.Label(null);
-                label.set_markup(Flotter.clean_double(step));
-                label.set_xalign(0);
-                box2.pack_start(label, false, false, 0);
+                this.make_label(step, box2);
             }
         }
     }
