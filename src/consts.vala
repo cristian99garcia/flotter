@@ -26,6 +26,12 @@ namespace Flotter {
     public const int WIDTH = 0;
     public const int HEIGHT = 1;
 
+    public const string REALS = "ℛ";
+    public const string RACIONALS = "ℚ";
+    public const string COMPLEXES = "ℂ";
+    public const string NATURALS = "ℤ";
+    public const string INTEGERS = "ℕ";
+
     public enum FunctionType {
         NULL,
         CONST,
