@@ -1,0 +1,6 @@
+[default]
+name=Configuración predeterminada
+device=local
+runtime=host
+prefix=/home/cristian/.cache/gnome-builder/install/flotter/host
+default=true

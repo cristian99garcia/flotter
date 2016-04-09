@@ -1229,4 +1229,23 @@ namespace Flotter {
 
         return solutions;
     }
+
+    public string[] solve_as_exponential_step_by_step(double[] values) {
+        string[] steps = { };
+        double a = values[Flotter.A];
+        steps += "%f<sup>x</sup> = 0".printf(a);
+        steps += "No tiene raíces // Arreglar mensajes"; // FIXME
+        steps += "S = ø";
+        return steps;
+    }
+
+    public string[] get_intercept_as_exponential_step_by_step(double[] values, string? name = null) {
+        string[] steps = { };
+        double a = values[Flotter.A];
+
+        steps += "%s(0) = %f<sup>0<sup>".printf((name != null)? name: "F", a);
+        steps += "%s(0) = 1".printf((name != null)? name: "F");
+        steps += "Todas las funciones racionales tienen como ordenada en el origen al 0";
+        return steps;
+    }
 }

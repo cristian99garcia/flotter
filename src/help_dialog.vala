@@ -30,10 +30,10 @@ namespace Flotter {
 
         private void make_label(string text, bool bold = false, int size = 12, int space = 0) {
             Gtk.Label label = new Gtk.Label(null);
-            label.set_markup(Flotter.clean_double(text));
+            label.set_markup("<tt>%s</tt>".printf(Flotter.clean_double(text)));
             label.set_xalign(0);
             label.set_selectable(true);
-            Flotter.apply_theme(label, "GtkLabel { font: Monospace %s %d; }".printf(bold? "bold": "", size));
+            //Flotter.apply_theme(label, "GtkLabel { font: Monospace %s %d; }".printf(bold? "bold": "", size));
             this.scrolled_box.pack_start(label, false, false, 0);
 
             if (space != 0) {
@@ -108,6 +108,8 @@ namespace Flotter {
                     break;
 
                 case Flotter.FunctionType.EXPONENTIAL:
+                    steps1 = Flotter.solve_as_exponential_step_by_step(this.function.values);
+                    steps2 = Flotter.get_intercept_as_cuadratic_step_by_step(this.function.values, this.function.name);
                     name = "exponencial";
                     reazon = "Porque x es el exponente (<b>a<sup>x</sup></b>)";
                     dominio += Flotter.REALS;
