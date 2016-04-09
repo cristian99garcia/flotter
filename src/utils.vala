@@ -41,7 +41,7 @@ namespace Flotter {
 
     public Flotter.Function? get_function_from_string(string t) {
         Flotter.show_msg("src/utils.vala Flotter.get_function_from_string");
-        Flotter.show_msg("Trying understand '%s'".printf(this.get_text()));
+        Flotter.show_msg("Trying understand '%s'".printf(t));
 
         string? name = null;
         Flotter.FunctionType? type = null;
@@ -113,6 +113,8 @@ namespace Flotter {
         function.name = name;
 
         Flotter.show_msg("Resultant function: " + function.get_formula());
+
+        return function;
     }
 
     public double parse_coefficient(string monomial) {
@@ -149,8 +151,8 @@ namespace Flotter {
     }
 
     public double? get_x_as_cuadratic(double[] values, double y, int p=0) {
-        // ax^2 + bx + c = y
-        // ax^2 + bx + c - y = 0
+        // ax² + bx + c = y
+        // ax² + bx + c - y = 0
         double a = values[Flotter.A];
         double b = values[Flotter.B];
         double c = values[Flotter.C];
@@ -174,8 +176,8 @@ namespace Flotter {
     }
 
     public double? get_x_as_cubic(double[] values, double y, int p=0) {
-        // ax^3 + bx^2 + cx + d = y
-        // ax^3 + bx^2 + cx + d - y = 0
+        // ax³ + bx² + cx + d = y
+        // ax³ + bx² + cx + d - y = 0
 
         double a = values[Flotter.A];
         double b = values[Flotter.B];
@@ -424,7 +426,7 @@ namespace Flotter {
             formula = "F(x) = ";
         }
 
-        formula += "%fx^2".printf(a);
+        formula += "%fx²".printf(a);
 
         if (b != 0) {
             if (b > 0) {
@@ -456,13 +458,13 @@ namespace Flotter {
             formula = "F(x) = ";
         }
 
-        formula += "%fx^3".printf(a);
+        formula += "%fx³".printf(a);
 
         if (b != 0) {
             if (b > 0) {
                 formula += "+";
             }
-            formula += "%fx^2".printf(b);
+            formula += "%fx²".printf(b);
         }
 
         if (c != 0) {
@@ -677,7 +679,7 @@ namespace Flotter {
 
         if (a != 0 && b != 0 && c != 0) {
             // Bhaskara:
-            //  -b +- √(b^2 -4ac)
+            //  -b +- √(b² -4ac)
             //  ________________
             //        2a
 
@@ -693,7 +695,7 @@ namespace Flotter {
             }
         } else if (a != 0 && b != 0 && c == 0) {
             // Example:
-            //   8x^2 - 16x = 0
+            //   8x² - 16x = 0
             //   8x * (x - 2) = 0
             //  By Hankel:
             //    Solution 1:
@@ -707,8 +709,8 @@ namespace Flotter {
         } else if (a != 0 && b == 0 && c != 0) {
             if (c < 0) {
                 // Example:
-                //   2x^2 - 64 = 0
-                //   2x^2 = 64
+                //   2x² - 64 = 0
+                //   2x² = 64
                 //   Solution 1:
                 //     2x = √64
                 //     2x = 8
@@ -724,8 +726,8 @@ namespace Flotter {
             }
         } else if (a != 0 && b == 0 && c == 0) {
             // Example:
-            //   4x^2 = 0
-            //   √4x^2 = √0
+            //   4x² = 0
+            //   √4x² = √0
             //   4x = 0
             //   x = 0
             solutions = { 0, 0 };
@@ -748,7 +750,7 @@ namespace Flotter {
         double b = values[Flotter.B];
         double c = values[Flotter.C];
 
-        step += "%fx^2".printf(a);
+        step += "%fx²".printf(a);
 
         if (b != 0) {
             if (b > 0) {
@@ -770,7 +772,7 @@ namespace Flotter {
 
         if (a != 0 && b != 0 && c != 0) {
             // Bhaskara:
-            //  -b +- √(b^2 -4ac)
+            //  -b +- √(b² -4ac)
             //  ________________
             //        2a
 
@@ -831,7 +833,7 @@ namespace Flotter {
             }
         } else if (a != 0 && b != 0 && c == 0) {
             // Example:
-            //   8x^2 - 16x = 0
+            //   8x² - 16x = 0
             //   8x * (x - 2) = 0
             //  By Hankel:
             //    Solution 1:
@@ -841,7 +843,7 @@ namespace Flotter {
             //      x - 2 == 0
             //      x = 2
 
-            step = "%fx^2";
+            step = "%fx²";
             if (b < 0) {
                 step += " %fx".printf(b);
             } else {
@@ -883,8 +885,8 @@ namespace Flotter {
         } else if (a != 0 && b == 0 && c != 0) {
             if (c < 0) {
                 // Example:
-                //   2x^2 - 64 = 0
-                //   2x^2 = 64
+                //   2x² - 64 = 0
+                //   2x² = 64
                 //   Solution 1:
                 //     2x = √64
                 //     2x = 8
@@ -934,7 +936,7 @@ namespace Flotter {
 
                 steps += "S = { %s; %s }".printf(root1, root2);
             } else {
-                step = "%fx^2";
+                step = "%fx²";
 
                 if (c < 0) {
                     step += " %f".printf(c);
@@ -951,8 +953,8 @@ namespace Flotter {
             }
         } else if (a != 0 && b == 0 && c == 0) {
             // Example:
-            //   4x^2 = 0
-            //   √4x^2 = √0
+            //   4x² = 0
+            //   √4x² = √0
             //   4x = 0
             //   x = 0
             steps += "%fx² = 0".printf(a);
@@ -1007,8 +1009,8 @@ namespace Flotter {
 
         if (d == 0) {
             // Example:
-            // 4x^3 - 5x^2 - x = 0
-            // x * (4x^2 - 5x - 1) = 0
+            // 4x³ - 5x² - x = 0
+            // x * (4x² - 5x - 1) = 0
             // Solution 1:
             //   x = 0
             //
