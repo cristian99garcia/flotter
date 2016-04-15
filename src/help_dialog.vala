@@ -30,7 +30,8 @@ namespace Flotter {
 
         private void make_label(string text, bool bold = false, int size = 12, int space = 0) {
             Gtk.Label label = new Gtk.Label(null);
-            label.set_markup("<tt>%s</tt>".printf(Flotter.clean_double(text)));
+            label.set_markup("<span font=\"Monospace %s\">%s</span>".printf(size.to_string(), Flotter.clean_double(text)));
+            //label.set_markup("<tt>%s</tt>".printf(Flotter.clean_double(text)));
             label.set_xalign(0);
             label.set_selectable(true);
             //Flotter.apply_theme(label, "GtkLabel { font: Monospace %s %d; }".printf(bold? "bold": "", size));
