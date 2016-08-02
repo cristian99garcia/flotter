@@ -644,22 +644,24 @@ namespace Flotter {
 
         // 3x = -1
         if (has_b) {
-            step = "%fx = ".printf(a);
-            step += "%f".printf(b * -1);
+            step = "%fx = %f".printf(a, b * -1);
             steps += step;
             step = "";
         }
 
         if (has_b && b % (a * -1) == 0) {
+            steps += "x = %f".printf(b / (a * -1));
             step = "S = { %f }".printf(b / (a * -1));
             steps += step;
         } else if (has_b && b % (a * -1) != 0) {
+            string d;
             if ((a < 0 && -b > 0) || (-b < 0 && a > 0)) {
-                step = "S = { -%f / %f }".printf((a < 0)? a * -1: a, (b < 0)? b * -1: b);
+                d = "-%f / %f".printf((b < 0)? b * -1: b, (a < 0)? a * -1: a);
             } else {
-                step = "S = { %f / %f }".printf((a < 0)? a * -1: a, (b < 0)? b * -1: b);
+                d = "%f / %f".printf((b < 0)? b * -1: b, (a < 0)? a * -1: a);
             }
-            steps += step;
+            steps += "x = %s".printf(d);
+            steps += "S = { %s }".printf(d);
         } else if (!has_b) {
             step = "S = { 0 }";
             steps += step;
