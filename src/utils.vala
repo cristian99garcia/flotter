@@ -39,6 +39,25 @@ namespace Flotter {
         return number;
     }
 
+    public string clear_exponential(string t) {
+        Flotter.show_msg("src/utils.vala Flotter.get_function_from_string");
+        Flotter.show_msg("Replacing all exponent by ^n");
+
+        string text = t.replace("⁰", "^0");
+        text = text.replace("¹", "^1");
+        text = text.replace("²", "^2");
+        text = text.replace("³", "^3");
+        text = text.replace("⁴", "^4");
+        text = text.replace("⁵", "^5");
+        text = text.replace("⁶", "^6");
+        text = text.replace("⁷", "^7");
+        text = text.replace("⁸", "^8");
+        text = text.replace("⁹", "^9");
+
+        Flotter.show_msg("%s was replaced by: %s".printf(t, text));
+        return text;
+    }
+
     public Flotter.Function? get_function_from_string(string t) {
         Flotter.show_msg("src/utils.vala Flotter.get_function_from_string");
         Flotter.show_msg("Trying understand '%s'".printf(t));
@@ -46,6 +65,7 @@ namespace Flotter {
         string? name = null;
         Flotter.FunctionType? type = null;
         string text = t.replace(" ", "").replace(",", ".");
+        text = Flotter.clear_exponential(text);
 
         if (text.length > 5) {
             string n = text.slice(0, 5);
