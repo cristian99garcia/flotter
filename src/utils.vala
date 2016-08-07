@@ -139,7 +139,13 @@ namespace Flotter {
 
     public double parse_coefficient(string monomial) {
         double number;
-        if (monomial.split("x")[0] != "") {
+        string snumber = monomial.split("x")[0];
+
+        if (snumber == "+") {
+            number = 1;
+        } else if (snumber == "-") {
+            number = -1;
+        } else if (snumber != "") {
             number = double.parse(monomial.split("x")[0]);
         } else {
             number = 1;
