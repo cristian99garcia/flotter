@@ -428,7 +428,13 @@ namespace Flotter {
             formula = "F(x) = ";
         }
 
-        formula += "%fx".printf(a);
+        if (a != 1 && a != -1) {
+            formula += "%fx".printf(a);
+        } else if (a == 1) {
+            formula += "x";
+        } else if (a == -1) {
+            formula += "-x";
+        }
 
         if (b != 0) {
             if (b > 0) {
@@ -452,7 +458,13 @@ namespace Flotter {
             formula = "F(x) = ";
         }
 
-        formula += "%fx²".printf(a);
+        if (a != 1 && a != -1) {
+            formula += "%fx²".printf(a);
+        } else if (a == 1) {
+            formula += "x²";
+        } else if (a == -1) {
+            formula += "-x²";
+        }
 
         if (b != 0) {
             if (b > 0) {
@@ -484,7 +496,13 @@ namespace Flotter {
             formula = "F(x) = ";
         }
 
-        formula += "%fx³".printf(a);
+        if (a != 1 && a != -1) {
+            formula += "%fx³".printf(a);
+        } else if (a == 1) {
+            formula += "x³";
+        } else if (a == -1) {
+            formula += "-x³";
+        }
 
         if (b != 0) {
             if (b > 0) {
@@ -523,7 +541,13 @@ namespace Flotter {
             formula = "F(x) = ";
         }
 
-        formula += "(%fx".printf(a);
+        if (a != 1 && a != -1) {
+            formula += "(%fx".printf(a);
+        } else if (a == 1) {
+            formula += "(x";
+        } else if (a == -1) {
+            formula += "(-x";
+        }
 
         if (b != 0) {
             if (b > 0) {
@@ -534,7 +558,13 @@ namespace Flotter {
             formula += ")";
         }
 
-        formula += " / (%fx".printf(c);
+        if (c != 1 && c != -1) {
+            formula += "/ (%fx".printf(c);
+        } else if (c == 1) {
+            formula += "/ (x";
+        } else if (a == -1) {
+            formula += "/ (-x";
+        }
 
         if (d != 0) {
             if (d > 0) {
